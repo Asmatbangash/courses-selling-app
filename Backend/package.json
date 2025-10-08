@@ -9,10 +9,10 @@
   "description": "full stack course selling web app",
   "main": "index.js",
   "type": "module",
-  "devDependencies": {},
   "scripts": {
-    "start": "nodemon index.js"
+    "start": "nodemon src/index.js"
   },
+  "devDependencies": {},
   "author": "asmat ullah",
   "license": "ISC"
 }
