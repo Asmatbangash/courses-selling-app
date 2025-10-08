@@ -19,8 +19,7 @@ app.get("/", (req, res) => {
 });
 
 // course routes
-app.use("/api/v1/create", router)
-app.use("/api/v1/get", router)
+app.use("/api/v1/course", router)
 
 
 app.listen(port, () => {
