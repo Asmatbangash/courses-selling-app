@@ -21,7 +21,6 @@ const createCourse = async (req, res) => {
 
         // Upload to Cloudinary
         const cloud_response = await cloudinary.uploader.upload(image.tempFilePath);
-        console.log("Cloudinary response ✅:", cloud_response);
 
         if (!cloud_response || cloud_response.error) {
             return res.status(400).json({ error: "Error uploading image to Cloudinary" });
@@ -34,7 +33,7 @@ const createCourse = async (req, res) => {
             price,
             image: {
                 public_id: cloud_response.public_id,
-                url: cloud_response.secure_url,
+                url: cloud_response.url,
             },
         };
 
@@ -43,12 +42,9 @@ const createCourse = async (req, res) => {
         res.status(200).json({ message: "Course created successfully", course });
 
     } catch (error) {
-        console.error("❌ Error creating course:", error);
         res.status(500).json({ error: "Internal server error", details: error.message });
     }
 };
-
-
 
 // get all course
 const getAllCourse = async (req, res) => {
@@ -63,19 +59,55 @@ const getAllCourse = async (req, res) => {
 // update course
 const updateCourse = async (req, res) => {
     try {
-        const { id } = req.params
-        const { title, description, price, image } = req.body
+        const { id } = req.params;
+        const { title, description, price } = req.body;
 
-        const updateCourseData = await coursesdb.findByIdAndUpdate(id, { title, description, price, image }, { new: true })
+        const image = req.files?.image;
+        if (!image) {
+            return res.status(400).json({ error: "No file uploaded" });
+        }
+
+        const allowedFormats = ["image/png", "image/jpeg"];
+        if (!allowedFormats.includes(image.mimetype)) {
+            return res.status(400).json({ error: "Only PNG and JPEG formats are allowed" });
+        }
+
+        // ✅ Upload to Cloudinary
+        const cloud_response = await cloudinary.uploader.upload(image.tempFilePath);
+
+        if (!cloud_response || cloud_response.error) {
+            return res.status(400).json({ error: "Error uploading image to Cloudinary" });
+        }
+
+        // ✅ Use `cloud_response` instead of `image`
+        const updateCourseData = await coursesdb.findByIdAndUpdate(
+            id,
+            {
+                title,
+                description,
+                price,
+                image: {
+                    public_id: cloud_response.public_id,
+                    url: cloud_response.secure_url
+                }
+            },
+            { new: true }
+        );
+
+        if (!updateCourseData) {
+            return res.status(404).json({ message: "Course not found!" });
+        }
 
         res.status(200).json({
-            message: "course data updated successfully.",
+            message: "Course data updated successfully.",
             updateCourseData
-        })
+        });
     } catch (error) {
-        console.log(error)
+        console.error(error);
+        res.status(500).json({ message: "Internal server error" });
     }
-}
+};
+
 
 // delete course
 const deleteCourse = async (req, res) => {
@@ -90,6 +122,23 @@ const deleteCourse = async (req, res) => {
     }
 }
 
+// course detail
+const courseDetail = async (req, res) => {
+    try {
+        const { id } = req.params
+        const detailCoursView = await coursesdb.findByIdAndDelete(id)
+        if (!detailCoursView) {
+            res.status(400).json({ message: "course not found" })
+        }
+        res.status(200).json({
+            message: "course detail viewed successfully!",
+            detailCoursView
+        })
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 
 
 
@@ -97,5 +146,6 @@ export {
     createCourse,
     getAllCourse,
     updateCourse,
-    deleteCourse
+    deleteCourse,
+    courseDetail
 }
