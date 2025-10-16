@@ -1,20 +1,30 @@
 import mongoose, { Schema } from "mongoose";
 
 const CourseDetailSchema = new Schema({
-    title:{
+    title: {
         type: String,
+        required: true
     },
-    description:{
-        type: String
+    description: {
+        type: String,
+        required: true
     },
-    price:{
-        type: String
+    price: {
+        type: String,
+        required: true
     },
     image: {
-        type: String
+        public_id: {
+            type: String,
+            required: true
+        },
+        url: {
+            type: String,
+            required: true
+        }
     }
 }, {
-    timestamps:true
+    timestamps: true
 })
 
 
