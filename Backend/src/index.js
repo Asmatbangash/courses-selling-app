@@ -3,7 +3,8 @@ import dotenv from "dotenv";
 import fileUpload from "express-fileupload";
 import { v2 as cloudinary } from "cloudinary";
 import { connectDb } from "./db/db.connection.js";
-import { router } from "./routes/courses.routes.js";
+import { CourseRouter } from "./routes/courses.routes.js";
+import { userRouter } from './routes/user.routes.js'
 
 dotenv.config();
 
@@ -35,7 +36,9 @@ app.get("/", (req, res) => {
 });
 
 // Routes
-app.use("/api/v1/course", router);
+app.use("/api/v1/course", CourseRouter);
+app.use("/api/v1/user", userRouter);
+
 
 // Start server
 app.listen(port, () => {
