@@ -1,6 +1,10 @@
 import { users } from "../models/user.model.js"
 import bcrypt from 'bcryptjs'
 import { z } from "zod";
+import jwt from 'jsonwebtoken'
+import dotenv from 'dotenv'
+
+dotenv.config()
 
 const signUp = async (req, res) => {
     const { FullName, email, password } = req.body;
@@ -12,7 +16,11 @@ const signUp = async (req, res) => {
     });
 
     try {
-        schema.parse({ FullName, email, password });
+        const zodeValidation = schema.safeParse(req.body);
+
+        if (!zodeValidation.success) {
+            return res.status(400).json({ errors: zodeValidation.error.issues.map((err) => err.message) })
+        }
 
         const userExist = await users.findOne({ email });
         if (userExist) {
@@ -20,7 +28,6 @@ const signUp = async (req, res) => {
         }
 
         const hashPassword = await bcrypt.hash(password, 10);
-
         const user = await users.create({
             FullName,
             email,
@@ -42,7 +49,6 @@ const logIn = async (req, res) => {
         if (!email || !password) {
             return res.status(400).json({ message: "All fields are required" });
         }
-        console.log('hi')
         const user = await users.findOne({ email });
         if (!user) {
             return res.status(404).json({ message: "User not found" });
@@ -54,13 +60,16 @@ const logIn = async (req, res) => {
             return res.status(401).json({ message: "Invalid password" });
         }
 
-        return res.status(200).json({
+        // jwt 
+        const token = jwt.sign({
+            userId: user._id
+        }, process.env.USER_ACCESS_TOKEN)
+
+        res.cookie("jwt", token)
+        res.status(201).json({
             message: "Login successful",
-            user: {
-                id: user._id,
-                email: user.email,
-                name: user.name,
-            },
+            user,
+            token
         });
 
 
@@ -70,5 +79,14 @@ const logIn = async (req, res) => {
 
 }
 
+const logOut = async (req, res) => {
+    try {
+        res.clearCookie("jwt")
+        res.status(200).json({ message: "user logOut successfully!" })
+    } catch (error) {
+        return res.status(500).json({ message: "there some error in logOut", error })
+    }
+}
 
-export { signUp, logIn }
+
+export { signUp, logIn, logOut }
