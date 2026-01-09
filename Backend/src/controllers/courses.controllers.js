@@ -145,7 +145,6 @@ const courseDetail = async (req, res) => {
 const buyCourses  = async (req, res) =>{
     const {userId} = req
     const {courseId} = req.params
-
     try {
     const course = await coursesdb.findById(courseId)
 

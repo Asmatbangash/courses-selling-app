@@ -3,6 +3,8 @@ import bcrypt from 'bcryptjs'
 import { z } from "zod";
 import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv'
+import { purchase } from "../models/purchase.model.js";
+import { coursesdb } from "../models/courses.model.js";
 
 dotenv.config()
 
@@ -63,9 +65,20 @@ const logIn = async (req, res) => {
         // jwt 
         const token = jwt.sign({
             userId: user._id
-        }, process.env.USER_ACCESS_TOKEN)
+        }, process.env.USER_ACCESS_TOKEN,
+     {
+        expiresIn: "1d"
+     }
+    )
 
-        res.cookie("jwt", token)
+    const cokieOptions = {
+        expires: new Date(Date.now() + 24 * 60 * 60 * 1000), // 1 day
+        httpOnly: true,
+        secure: process.env.NODE_ENV ==="production",
+        sameSite: "Strict"
+    }
+
+        res.cookie("jwt", token, cokieOptions)
         res.status(201).json({
             message: "Login successful",
             user,
@@ -88,5 +101,31 @@ const logOut = async (req, res) => {
     }
 }
 
+const purchaseCourses = async(req, res) =>{
+ const {userId} = req
+ try {
+  const purchased = await purchase.find({userId})
 
-export { signUp, logIn, logOut }
+  if(!purchased) {
+    return res.status(404).json({errors: "you have not purchase any course yet!"})
+  }
+  let purchasedCourseId = []
+
+  for(let i=0; i < purchased.length; i++){
+    purchasedCourseId.push(purchased[i].courseId)
+  }
+
+  const courseData = await coursesdb.find({
+    _id: {$in: purchasedCourseId}
+  })
+
+  res.status(200).json({purchased, courseData})
+    
+ } catch (error) {
+     console.log("Error to get purchaseCourses!", error)
+    return res.status(401).json({errors: "Error to get purchaseCourses!"})
+ }
+}
+
+
+export { signUp, logIn, logOut, purchaseCourses }

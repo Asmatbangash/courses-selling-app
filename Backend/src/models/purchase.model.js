@@ -1,19 +1,21 @@
 import mongoose, { Schema } from "mongoose";
-import { users } from "./user.model.js";
-import { coursesdb } from "./courses.model.js";
 
-const purchaseSchema = new Schema({
-   userId: {
-    type:mongoose.Types.ObjectId,
-    ref: users
-   },
-   courseId:{
-    type: mongoose.Types.ObjectId,
-    ref: coursesdb
-   }
-}, {
+const purchaseSchema = new Schema(
+  {
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "users",
+      required: true
+    },
+    courseId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "coursesdb", 
+      required: true
+    }
+  },
+  {
     timestamps: true
-})
+  }
+);
 
-
-export const purchase = mongoose.model("purchase", purchaseSchema)
+export const purchase = mongoose.model("purchase", purchaseSchema);
