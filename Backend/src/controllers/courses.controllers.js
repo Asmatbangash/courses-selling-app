@@ -1,8 +1,9 @@
-import { coursesdb } from "../models/courses.model.js"
+import { course } from "../models/courses.model.js"
 import { v2 as cloudinary } from "cloudinary";
 import { purchase } from "../models/purchase.model.js";
 // create course
 const createCourse = async (req, res) => {
+    const adminId = req.adminId
     try {
         const { title, description, price } = req.body;
 
@@ -36,11 +37,12 @@ const createCourse = async (req, res) => {
                 public_id: cloud_response.public_id,
                 url: cloud_response.url,
             },
+            creatorId: adminId
         };
 
-        const course = await coursesdb.create(courseData);
+        const Course = await course.create(courseData);
 
-        res.status(200).json({ message: "Course created successfully", course });
+        res.status(200).json({ message: "Course created successfully", Course });
 
     } catch (error) {
         res.status(500).json({ error: "Internal server error", details: error.message });
@@ -50,7 +52,7 @@ const createCourse = async (req, res) => {
 // get all course
 const getAllCourse = async (req, res) => {
     try {
-        const getCourses = await coursesdb.find()
+        const getCourses = await course.find()
         res.status(200).json({ message: "all courses get succesfully!", getCourses })
     } catch (error) {
         console.log(error)
@@ -59,6 +61,7 @@ const getAllCourse = async (req, res) => {
 
 // update course
 const updateCourse = async (req, res) => {
+    const adminId = req.adminId
     try {
         const { id } = req.params;
         const { title, description, price } = req.body;
@@ -81,7 +84,7 @@ const updateCourse = async (req, res) => {
         }
 
         // ✅ Use `cloud_response` instead of `image`
-        const updateCourseData = await coursesdb.findByIdAndUpdate(
+        const updateCourseData = await course.findByIdAndUpdate(
             id,
             {
                 title,
@@ -90,7 +93,8 @@ const updateCourse = async (req, res) => {
                 image: {
                     public_id: cloud_response.public_id,
                     url: cloud_response.secure_url
-                }
+                },
+                creatorId: adminId
             },
             { new: true }
         );
@@ -112,9 +116,15 @@ const updateCourse = async (req, res) => {
 
 // delete course
 const deleteCourse = async (req, res) => {
+  const adminId = req.adminId
     try {
         const { id } = req.params
-        await coursesdb.findByIdAndDelete(id)
+        const Course  = await course.findByIdAndDelete(id, {creatorId: adminId})
+ 
+        if(!Course){
+            return res.status(404).json({errors: "course not found!" })
+        }
+
         res.status(200).json({
             message: "course deleted successfully!"
         })
@@ -127,7 +137,7 @@ const deleteCourse = async (req, res) => {
 const courseDetail = async (req, res) => {
     try {
         const { id } = req.params
-        const detailCoursView = await coursesdb.findByIdAndDelete(id)
+        const detailCoursView = await course.findByIdAndDelete(id)
         if (!detailCoursView) {
             res.status(400).json({ message: "course not found" })
         }
@@ -146,7 +156,7 @@ const buyCourses  = async (req, res) =>{
     const {userId} = req
     const {courseId} = req.params
     try {
-    const course = await coursesdb.findById(courseId)
+    const course = await course.findById(courseId)
 
     if(!course){
         return res.status(404).json({errors: "course not found!"})

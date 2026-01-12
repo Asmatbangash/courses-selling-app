@@ -20,10 +20,14 @@ const CourseDetailSchema = new Schema({
         url: {
             type: String,
         }
+    },
+    creatorId:{
+        type:mongoose.Types.ObjectId,
+        ref:"user"
     }
 }, {
     timestamps: true
 })
 
 
-export const coursesdb = mongoose.model("coursesdb", CourseDetailSchema)
+export const course = mongoose.model("course", CourseDetailSchema)

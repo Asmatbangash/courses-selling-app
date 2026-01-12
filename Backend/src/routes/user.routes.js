@@ -3,12 +3,12 @@ import { logIn, logOut, purchaseCourses, signUp } from '../controllers/user.cont
 import userMiddlware from '../middlewares/user.middlware.js'
 
 
-const userRouter = express.Router()
+const userRoute = express.Router()
 
-userRouter.route("/signUp").post(signUp)
-userRouter.route("/login").post(logIn)
-userRouter.route("/logOut").get(logOut)
-userRouter.route("/purchaseCourses").get(userMiddlware,purchaseCourses)
+userRoute.route("/signUp").post(signUp)
+userRoute.route("/login").post(logIn)
+userRoute.route("/logOut").get(logOut)
+userRoute.route("/purchaseCourses").get(userMiddlware,purchaseCourses)
 
 
-export { userRouter }
+export { userRoute }

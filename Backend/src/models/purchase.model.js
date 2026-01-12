@@ -4,12 +4,12 @@ const purchaseSchema = new Schema(
   {
     userId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "users",
+      ref: "user",
       required: true
     },
     courseId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "coursesdb", 
+      ref: "course", 
       required: true
     }
   },

@@ -3,8 +3,10 @@ import dotenv from "dotenv";
 import fileUpload from "express-fileupload";
 import { v2 as cloudinary } from "cloudinary";
 import { connectDb } from "./db/db.connection.js";
-import { CourseRouter } from "./routes/courses.routes.js";
-import { userRouter } from './routes/user.routes.js'
+import { courseRoute } from "./routes/courses.routes.js";
+import { userRoute } from './routes/user.routes.js'
+import { adminRoute } from "./routes/admin.routes.js";
+import cookieParser from 'cookie-parser'
 
 dotenv.config();
 
@@ -12,8 +14,8 @@ const app = express();
 const port = process.env.PORT || 4000;
 
 app.use(express.json());
+app.use(cookieParser())
 
-// File upload middleware
 app.use(
   fileUpload({
     useTempFiles: true,
@@ -21,7 +23,6 @@ app.use(
   })
 );
 
-// Cloudinary configuration
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
   api_key: process.env.CLOUD_API_KEY,
@@ -30,17 +31,12 @@ cloudinary.config({
 
 connectDb();
 
-// Test route
-app.get("/", (req, res) => {
-  res.send("Hello Node!");
-});
-
-// Routes
-app.use("/api/v1/course", CourseRouter);
-app.use("/api/v1/user", userRouter);
+app.use("/api/v1/course", courseRoute);
+app.use("/api/v1/user", userRoute);
+app.use("/api/v1/admin", adminRoute);
 
 
-// Start server
+
 app.listen(port, () => {
-  console.log(`✅ Server is running on port ${port}`);
+  console.log(`Server is running on port ${port}`);
 });
