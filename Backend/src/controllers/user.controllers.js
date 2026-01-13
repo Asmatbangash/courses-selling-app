@@ -11,9 +11,8 @@ dotenv.config()
 
 const signUp = async (req, res) => {
     const { FullName, email, password } = req.body;
-
     const schema = z.object({
-        FullName: z.string().min(2, { message: "FullName must be at least 2 characters" }),
+        FullName: z.string().min(3, { message: "FullName must be at least 2 characters" }),
         email: z.string().email({ message: "Invalid email address" }),
         password: z.string().min(6, { message: "Password must be at least 6 characters" }),
     });

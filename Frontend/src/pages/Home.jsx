@@ -64,8 +64,7 @@ function Home() {
 useEffect(()=>{
    const fetchCourses = async() =>{
      try {
-    const response = await axios.get('http://localhost:4000/api/v1/course/get');
-    console.log(response.data.getCourses)
+    const response = await axios.get('http://localhost:4000/api/v1/course/get',{withCredentials:true});
     setCourses(response.data.getCourses)
   } catch (error) {
     console.error(error);
