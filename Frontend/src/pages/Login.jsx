@@ -1,13 +1,16 @@
-import React from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import {  toast } from 'react-toastify';
+import { useState } from "react";
+
 
 function Login() {
     const navigate = useNavigate()
+    const [error, setError] = useState()
   const {
     register,
     handleSubmit,
@@ -23,9 +26,15 @@ function Login() {
         withCredentials: true,
       }
     );
-    navigate("/")
+    setTimeout(() =>{
+      toast.success(response.data.message)
+      localStorage.setItem("user", JSON.stringify(response.data.token))
+      navigate("/")
+      window.location.reload()
+    },2000)
   } catch (error) {
-    console.error(error);
+    setError(error.response.data.message)
+    console.error(error.response);
   }
   };
 
@@ -38,6 +47,7 @@ function Login() {
           <p className="mt-1 text-sm text-gray-500">
             Login to your account
           </p>
+          <p className="mt-1 text-sm text-red-600">{error}</p>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">

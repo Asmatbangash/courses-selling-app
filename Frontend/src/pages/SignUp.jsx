@@ -1,14 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 
 function SignUp() {
     const navigate = useNavigate()
+    const [error, setError] = useState()
   const {
     register,
     handleSubmit,
@@ -27,10 +29,11 @@ function SignUp() {
         withCredentials: true,
       }
     );
-    console.log(response)
+    toast.success(response.data.message)
     navigate('/login')
   } catch (error) {
-    console.error(error);
+    setError(error.response.data.message)
+    console.error(error.response);
   }
 }
 
@@ -42,6 +45,9 @@ function SignUp() {
           <h1 className="text-2xl font-semibold">Create Account</h1>
           <p className="mt-1 text-sm text-gray-500">
             Sign up to get started
+          </p>
+           <p className="mt-1 text-sm text-red-500">
+            {error}
           </p>
         </div>
 
@@ -56,13 +62,13 @@ function SignUp() {
                 required: "FullName is required",
                 minLength: {
                   value: 3,
-                  message: "Minimum 3 characters",
+                  errors: "Minimum 3 characters",
                 },
               })}
             />
-            {errors.name && (
+            {errors.FullName && (
               <p className="text-sm text-red-500">
-                {errors.name.message}
+                {errors.FullName.message}
               </p>
             )}
           </div>
@@ -77,7 +83,7 @@ function SignUp() {
                 required: "Email is required",
                 pattern: {
                   value: /^\S+@\S+$/i,
-                  message: "Invalid email address",
+                  errors: "Invalid email address",
                 },
               })}
             />
@@ -97,7 +103,7 @@ function SignUp() {
                 required: "Password is required",
                 minLength: {
                   value: 6,
-                  message: "Minimum 6 characters",
+                  errors: "Minimum 6 characters",
                 },
               })}
             />

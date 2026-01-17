@@ -1,10 +1,35 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import {Link} from "react-router-dom"
+import axios from "axios";
+import { toast } from "react-toastify";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+
+useEffect(()=>{
+  const token = localStorage.getItem("user")
+  if(token){
+   setIsLoggedIn(true)
+  }else{
+   setIsLoggedIn(false)
+  }
+},[])
+
+  const handleLogOut = async() =>{
+    try {
+      const response = await axios.get('http://localhost:4000/api/v1/user/logOut',{withCredentials: true})
+      toast.success(response.data.message)
+      localStorage.removeItem('user');
+      setIsLoggedIn(false)
+    } catch (error) {
+      toast.error(error.response.data.errors
+)
+      console.log(error)
+    }
+}
 
   return (
     <nav className="w-full border-b bg-white">
@@ -18,12 +43,18 @@ export default function Navbar() {
           </Link>
 
           <div className="hidden md:flex items-center gap-3">
+            {
+              isLoggedIn ? (<Button onClick={handleLogOut}>LogOut</Button> )  : (
+              <>
             <Link to="/login">
             <Button variant="ghost">Login</Button>
             </Link>
             <Link to="/sign-up">
             <Button>Sign Up</Button>
             </Link>
+              </>
+              )
+            }
           </div>
 
           <button
@@ -38,12 +69,16 @@ export default function Navbar() {
         {open && (
           <div className="md:hidden pb-4 animate-in slide-in-from-top-2">
             <div className="flex flex-col gap-3">
+               <Link to="/login">   
               <Button variant="ghost" className="justify-start">
                 Login
               </Button>
+               </Link>
+                <Link to="/sign-up">   
               <Button className="justify-start">
                 Sign Up
               </Button>
+                </Link>
             </div>
           </div>
         )}
