@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Slider from "react-slick";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight,ArrowRight } from "lucide-react";
 import axios from 'axios'
+import {Navbar, Footer } from "../components";
+import { Link } from "react-router-dom";
 
 
 
@@ -74,6 +76,8 @@ useEffect(()=>{
 },[])
 
   return (
+    <>
+    <Navbar />
     <section className="relative px-4 md:px-12 py-12">
         <div className="flex justify-center items-center flex-col pb-8">
       <h2 className="text-2xl md:text-3xl font-bold text-center">
@@ -84,9 +88,9 @@ useEffect(()=>{
   and succeed in today’s competitive tech world.
 </p>
 
-<Button className="mt-4 rounded-xl px-6">
-    Explore Courses
-  </Button>
+<Link to="/courses" className="mt-4 flex rounded-xl px-6 bg-black text-white">
+    Explore Courses <ArrowRight className="ms-2"/>
+  </Link>
         </div>
 
 
@@ -119,6 +123,8 @@ useEffect(()=>{
         ))}
       </Slider>
     </section>
+    <Footer />
+      </>
   );
 }
 

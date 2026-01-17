@@ -8,7 +8,7 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router";
-import {Home, Login, SignUp} from './pages';
+import {Home, Courses,Purchases, Login, SignUp, Settings} from './pages';
 
 let router = createBrowserRouter([
   {
@@ -18,6 +18,18 @@ let router = createBrowserRouter([
       {
       path:"/",
       element: <Home />
+    },
+    {
+      path:"/courses",
+      element: <Courses />,
+    },
+    {
+      path:"/buy-courses",
+      element: <Purchases />
+    },
+    {
+      path:'/settings',
+      element: <Settings />
     },
     {
       path:"/sign-up",
