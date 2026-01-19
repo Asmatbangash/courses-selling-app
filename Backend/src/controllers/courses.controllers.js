@@ -152,31 +152,41 @@ const courseDetail = async (req, res) => {
 
 
 // buy courses
-const buyCourses  = async (req, res) =>{
-    const {userId} = req
-    const {courseId} = req.params
-    try {
-    const course = await course.findById(courseId)
+const buyCourses = async (req, res) => {
+  try {
+    const userId = req.userId;
+    const { courseId } = req.params;
 
-    if(!course){
-        return res.status(404).json({errors: "course not found!"})
+    const Course = await course.findById(courseId);
+    if (!Course) {
+      return res.status(404).json({ error: "Course not found" });
     }
 
-    const existPurchase = await purchase.findOne({userId, courseId})
-    if(existPurchase){
-        return res.status(400).json({errors: "you have already purhcase this course!."})
+    const existPurchase = await purchase.findOne({ userId, courseId });
+    if (existPurchase) {
+      return res.status(400).json({
+        error: "You have already purchased this course",
+      });
     }
-  
-    const newPurchase = new purchase({userId, courseId})
-    await newPurchase.save()
 
-    res.status(201).json({message: "course purchase successfull.", newPurchase})
+    const newPurchase = new purchase({
+      userId,
+      courseId,
+    });
 
-    } catch (error) {
-        return res.status(401).json({errors: "Error in buying course"})
-        console.log(error)
-    }
-}
+    await newPurchase.save();
+
+    res.status(201).json({
+      success: true,
+      message: "Course purchased successfully",
+      data: newPurchase,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Something went wrong" });
+  }
+};
+
 
 
 

@@ -46,52 +46,54 @@ const signUp = async (req, res) => {
 };
 
 const logIn = async (req, res) => {
-    const { email, password } = req.body;
-    try {
-        if (!email || !password) {
-            return res.status(400).json({ message: "All fields are required" });
-        }
-        const User = await user.findOne({ email });
-        if (!User) {
-            return res.status(404).json({ message: "User not found" });
-        }
+  const { email, password } = req.body;
 
-
-        const isMatch = await bcrypt.compare(password, User.password);
-        if (!isMatch) {
-            return res.status(401).json({ message: "Invalid password" });
-        }
-
-        // jwt 
-        const token = jwt.sign({
-            id: user._id
-        }, config.JWT_USER_PASSWORD,
-     {
-        expiresIn: "1d"
-     }
-    )
-
-    const cokieOptions = {
-        expires: new Date(Date.now() + 24 * 60 * 60 * 1000), // 1 day
-        httpOnly: true,
-        secure: process.env.NODE_ENV ==="production",
-        sameSite: "Strict"
+  try {
+    if (!email || !password) {
+      return res.status(400).json({ message: "All fields are required" });
     }
 
-        res.cookie("jwt", token, cokieOptions)
-        res.status(201).json({
-            message: "Login successful",
-            User,
-            token
-        });
-
-
-    } catch (error) {
-        console.log(error)
-        return res.status(400).json({ message: "there are some server side error in login" })
+    const User = await user.findOne({ email });
+    if (!User) {
+      return res.status(404).json({ message: "User not found" });
     }
 
-}
+    const isMatch = await bcrypt.compare(password, User.password);
+    if (!isMatch) {
+      return res.status(401).json({ message: "Invalid password" });
+    }
+
+    const token = jwt.sign(
+      { id: User._id },  
+      config.JWT_USER_PASSWORD,
+      { expiresIn: "1d" }
+    );
+    
+    const cookieOptions = {
+      expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "Strict",
+    };
+
+    res.cookie("jwt", token, cookieOptions);
+
+    res.status(200).json({
+      success: true,
+      message: "Login successful",
+      token,
+      user: {
+        id: User._id,
+        email: User.email,
+      },
+    });
+
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
 
 const logOut = async (req, res) => {
     try {
@@ -107,7 +109,7 @@ const logOut = async (req, res) => {
 }
 
 const purchaseCourses = async(req, res) =>{
- const {userId} = req
+ const userId = req.userId
  try {
   const purchased = await purchase.find({userId})
 
