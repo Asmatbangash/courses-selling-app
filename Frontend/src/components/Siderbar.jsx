@@ -17,7 +17,7 @@ const Sidebar = () => {
   const menu = [
     { name: "Home", icon: Home, path: "/" },
     { name: "Courses", icon: BookOpen, path: "/courses" },
-    { name: "Purchases", icon: BookCheck, path: "/buy-courses" },
+    { name: "Purchases", icon: BookCheck, path: "/purchased-courses" },
     { name: "Settings", icon: Settings, path: "/settings" },
   ];
 
