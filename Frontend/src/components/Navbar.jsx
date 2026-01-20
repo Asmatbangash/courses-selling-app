@@ -69,16 +69,18 @@ useEffect(()=>{
         {open && (
           <div className="md:hidden pb-4 animate-in slide-in-from-top-2">
             <div className="flex flex-col gap-3">
-               <Link to="/login">   
-              <Button variant="ghost" className="justify-start">
-                Login
-              </Button>
-               </Link>
-                <Link to="/sign-up">   
-              <Button className="justify-start">
-                Sign Up
-              </Button>
-                </Link>
+               {
+              isLoggedIn ? (<Button onClick={handleLogOut}>LogOut</Button> )  : (
+              <>
+            <Link to="/login">
+            <Button variant="ghost">Login</Button>
+            </Link>
+            <Link to="/sign-up">
+            <Button>Sign Up</Button>
+            </Link>
+              </>
+              )
+            }
             </div>
           </div>
         )}

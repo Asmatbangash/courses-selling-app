@@ -47,7 +47,6 @@ function Purchases() {
       <main className="flex-1 p-6 bg-gray-50">
         <h1 className="text-2xl font-bold mb-4">📚 Purchased Courses</h1>
 
-        {/* 🔄 Loading Spinner */}
         {loading && (
           <div className="flex justify-center items-center h-60">
             <div className="w-12 h-12 border-4 border-gray-300 border-t-black rounded-full animate-spin"></div>
@@ -69,7 +68,6 @@ function Purchases() {
           </div>
         )}
 
-        {/* ✅ Purchased Courses */}
         <div className="flex flex-wrap">
           {!loading &&
             purchased.map((course, index) => (

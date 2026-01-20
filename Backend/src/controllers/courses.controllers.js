@@ -159,13 +159,13 @@ const buyCourses = async (req, res) => {
 
     const Course = await course.findById(courseId);
     if (!Course) {
-      return res.status(404).json({ error: "Course not found" });
+      return res.status(404).json({ message: "Course not found" });
     }
 
     const existPurchase = await purchase.findOne({ userId, courseId });
     if (existPurchase) {
       return res.status(400).json({
-        error: "You have already purchased this course",
+        message: "You have already purchased this course",
       });
     }
 

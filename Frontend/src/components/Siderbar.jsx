@@ -1,18 +1,30 @@
-import { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, NavLink } from "react-router-dom";
 import {
   Home,
   BookOpen,
   BookCheck,
   Settings,
+  LogIn,
   LogOut,
   Menu,
   X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { toast } from "react-toastify";
 
 const Sidebar = () => {
   const [open, setOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  
+  useEffect(()=>{
+    const token = localStorage.getItem("user")
+    if(token){
+     setIsLoggedIn(true)
+    }else{
+     setIsLoggedIn(false)
+    }
+  },[])
 
   const menu = [
     { name: "Home", icon: Home, path: "/" },
@@ -21,10 +33,23 @@ const Sidebar = () => {
     { name: "Settings", icon: Settings, path: "/settings" },
   ];
 
+   const handleLogOut = async() =>{
+      try {
+        const response = await axios.get('http://localhost:4000/api/v1/user/logOut',{withCredentials: true})
+        toast.success(response.data.message)
+        localStorage.removeItem('user');
+        setIsLoggedIn(false)
+      } catch (error) {
+        console.log(error)
+      
+      }
+  }
+  
+
   return (
     <>
        {/* Mobile Navbar  */}
-      <div className="md:hidden flex items-center justify-between px-4 py-3 border-b bg-white">
+      <div className="md:hidden absolute top-0 border-b bg-white">
         <Button variant="ghost" onClick={() => setOpen(true)}>
           <Menu />
         </Button>
@@ -38,7 +63,7 @@ const Sidebar = () => {
       )}
 
       <aside
-        className={`fixed md:static top-0 left-0 h-screen w-64 bg-white border-r z-50 transform transition-transform duration-300
+        className={`fixed md:static top-0 left-0 min-h-screen w-64 bg-white border-r z-50 transform transition-transform duration-300
         ${open ? "translate-x-0" : "-translate-x-full"}
         md:translate-x-0`}
       >
@@ -75,13 +100,15 @@ const Sidebar = () => {
         </nav>
 
         <div className="absolute bottom-0 w-full p-4 border-t">
-          <Button
-            variant="destructive"
-            className="w-full flex gap-2"
-          >
-            <LogOut size={18} />
-            Logout
-          </Button>
+         {
+              isLoggedIn ? (<Button className="w-full" onClick={handleLogOut} variant="destructive"><LogOut />LogOut</Button> )  : (
+              <>
+            <Link to="/login">
+            <Button className="w-full"><LogIn />Login</Button>
+            </Link>
+              </>
+              )
+            }
         </div>
       </aside>
     </>
