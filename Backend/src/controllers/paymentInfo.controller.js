@@ -5,7 +5,6 @@ const payment =async (req, res) =>{
   const payment = req.body;
   try {
     const payementInfoData = await paymentInfo.create(payment);
-    console.log(payementInfoData);
     const userId = payementInfoData?.userId;
     const courseId = payementInfoData?.courseId;
     res.status(201).json({ message: "payment Details: ", payementInfoData });
