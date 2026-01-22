@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { assets } from "../assets/assets";
 
 export default function Footer() {
   return (
@@ -9,7 +10,7 @@ export default function Footer() {
           
           <div className="space-y-3">
             <div className="flex items-center gap-2">
-              <img src="/logo.svg" alt="logo" className="h-8 w-8" />
+              <img src={assets.logo} alt="logo" className="h-10 w-10 rounded-full" />
               <span className="text-xl font-semibold">CSA</span>
             </div>
             <p className="text-sm text-gray-600">

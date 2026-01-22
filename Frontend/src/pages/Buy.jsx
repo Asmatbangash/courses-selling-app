@@ -37,7 +37,6 @@ function Buy() {
           withCredentials: true,
         }
       );
-      console.log("buy course",response)
       setCourse(response.data.courseData)
       setClientSecrete(response.data.clientSecret)
     } catch (error) {

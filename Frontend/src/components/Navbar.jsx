@@ -4,6 +4,7 @@ import { Menu, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { assets } from "../assets/assets";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -39,13 +40,11 @@ export default function Navbar() {
       <div className="mx-auto max-w-7xl px-4">
         <div className="flex h-16 items-center justify-between">
           
-          {/* Logo */}
           <Link to="/" className="flex items-center gap-2">
-            <img src="/logo.svg" alt="logo" className="h-8 w-8" />
+            <img src={assets.logo} alt="logo" className="h-10 w-10 rounded-full" />
             <span className="text-xl font-semibold">CSA</span>
           </Link>
 
-          {/* Desktop Menu */}
           <div className="hidden md:flex items-center gap-3">
             {isLoggedIn ? (
               <Button onClick={handleLogOut}>Logout</Button>
