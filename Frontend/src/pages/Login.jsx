@@ -26,9 +26,9 @@ function Login() {
         withCredentials: true,
       }
     );
+    localStorage.setItem("user", JSON.stringify(response.data))
     setTimeout(() =>{
       toast.success(response.data.message)
-      localStorage.setItem("user", JSON.stringify(response.data.token))
       navigate("/")
       window.location.reload()
     },2000)

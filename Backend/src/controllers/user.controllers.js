@@ -82,10 +82,7 @@ const logIn = async (req, res) => {
       success: true,
       message: "Login successful",
       token,
-      user: {
-        id: User._id,
-        email: User.email,
-      },
+      User
     });
 
   } catch (error) {

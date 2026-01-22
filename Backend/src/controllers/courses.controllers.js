@@ -1,6 +1,11 @@
 import { course } from "../models/courses.model.js"
 import { v2 as cloudinary } from "cloudinary";
 import { purchase } from "../models/purchase.model.js";
+import dotenv from 'dotenv'
+
+dotenv.config()
+
+
 // create course
 const createCourse = async (req, res) => {
     const adminId = req.adminId
@@ -152,40 +157,49 @@ const courseDetail = async (req, res) => {
 
 
 // buy courses
+import Stripe from "stripe";
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+
 const buyCourses = async (req, res) => {
   try {
     const userId = req.userId;
     const { courseId } = req.params;
 
-    const Course = await course.findById(courseId);
-    if (!Course) {
+    const courseData = await course.findById(courseId);
+    if (!courseData) {
       return res.status(404).json({ message: "Course not found" });
     }
 
     const existPurchase = await purchase.findOne({ userId, courseId });
     if (existPurchase) {
-      return res.status(400).json({
-        message: "You have already purchased this course",
-      });
+      return res.status(400).json({ message: "You already purchased this course" });
     }
-
-    const newPurchase = new purchase({
-      userId,
-      courseId,
+    //Create PaymentIntent
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: courseData.price * 100, 
+      currency: "usd",
+      automatic_payment_methods: {
+        enabled: true,
+      },
+      metadata: {
+        userId,
+        courseId,
+      },
     });
 
-    await newPurchase.save();
-
-    res.status(201).json({
-      success: true,
-      message: "Course purchased successfully",
-      data: newPurchase,
+    res.status(200).json({
+      message: "course purchased successfully!",
+      clientSecret: paymentIntent.client_secret,
+      courseData,
     });
+
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ error: "Something went wrong" });
+    console.error("Stripe Error:", error);
+    res.status(500).json({ error: error.message });
   }
 };
+
 
 
 

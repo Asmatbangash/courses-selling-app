@@ -6,6 +6,7 @@ import { connectDb } from "./db/db.connection.js";
 import { courseRoute } from "./routes/courses.routes.js";
 import { userRoute } from './routes/user.routes.js'
 import { adminRoute } from "./routes/admin.routes.js";
+import { paymentInfo } from "./routes/paymentInfo.routes.js";
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
 
@@ -43,6 +44,8 @@ connectDb();
 app.use("/api/v1/course", courseRoute);
 app.use("/api/v1/user", userRoute);
 app.use("/api/v1/admin", adminRoute);
+app.use("/api/v1/payment", paymentInfo);
+
 
 
 

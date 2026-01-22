@@ -17,14 +17,14 @@ const Sidebar = () => {
   const [open, setOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   
-  useEffect(()=>{
-    const token = localStorage.getItem("user")
-    if(token){
-     setIsLoggedIn(true)
-    }else{
-     setIsLoggedIn(false)
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user?.token) {
+      setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false);
     }
-  },[])
+  }, []);
 
   const menu = [
     { name: "Home", icon: Home, path: "/" },
