@@ -3,10 +3,15 @@ import axios from "axios";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { AdminSidebar } from "../components/admin";
+import { toast } from "react-toastify";
+import { Link } from "react-router-dom";
 
 function OurCourses() {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const admin = JSON.parse(localStorage.getItem("admin"))
+  const token = admin?.token
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -25,6 +30,25 @@ function OurCourses() {
 
     fetchCourses();
   }, []);
+
+  const handlDelete = async(id) =>{
+      try {
+        const response = await axios.delete(`http://localhost:4000/api/v1/course/delete/${id}`,
+          {
+            headers:{
+              Authorization: `Bearer ${token}`
+            },
+            withCredentials: true
+          }
+        )
+        toast.success(response.data?.message || "user logout successfully")
+        const updatedCourses = courses.filter((course)=> course._id !== id)
+        setCourses(updatedCourses)
+      } catch (error) {
+         console.log("Error in deleting course ", error);
+      toast.error(error.response.data.errors || "Error in deleting course");
+      }
+  }
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
@@ -64,8 +88,10 @@ function OurCourses() {
                     {course.description}
                   </p>
                 <div>
-                  <Button variant='destructive' className="w-full mt-2 cursor-pointer">Delete</Button>
+                  <Button variant='destructive' className="w-full mt-2 cursor-pointer" onClick={()=>handlDelete(course._id)}>Delete</Button>
+                  <Link to={`/admin/update-course/${course._id}`}>
                   <Button className="w-full mt-2 cursor-pointer">Update</Button>
+                  </Link>
                 </div>
                 </CardContent>
               </Card>
