@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "react-toastify";
+import axios from 'axios'
 
 const AdminSidebar = () => {
   const [open, setOpen] = useState(false);

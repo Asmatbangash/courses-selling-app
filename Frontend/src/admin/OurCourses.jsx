@@ -30,7 +30,7 @@ function OurCourses() {
     <div className="flex min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       <AdminSidebar />
       <main className="flex-1 p-8">
-        <h1 className="text-3xl font-bold mb-6">📚 Explore Courses</h1>
+        <h1 className="text-3xl font-bold mb-6">📚 Our Courses</h1>
         {loading && (
           <div className="flex justify-center items-center h-64">
             <div className="w-12 h-12 border-4 border-gray-300 border-t-black rounded-full animate-spin" />

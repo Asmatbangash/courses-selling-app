@@ -3,7 +3,7 @@ import "./index.css";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import App from "./App.jsx";
-import { createBrowserRouter, RouterProvider } from "react-router";
+import { createBrowserRouter, Navigate, RouterProvider } from "react-router";
 import {
   Home,
   Courses,
@@ -23,6 +23,10 @@ import {AdminSignUp, AdminLogin, CreateCourse, OurCourses, Dashboard, UpdateCour
 const stripePromise = loadStripe(
   "pk_test_51SruLZJNbviK3qXfJ55IqRglSipttnpR6jyoUIEFgjBoxACaU16I0t78rjJVRE39z5CwAENIPnZsASWeiO7JJm4S00JPVcDzGE",
 );
+
+ const user = JSON.parse(localStorage.getItem("user"));
+  const admin = JSON.parse(localStorage.getItem("admin"));
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -32,7 +36,7 @@ const router = createBrowserRouter([
       </Elements>
     ),
     children: [
-      { path: "/", element: <Home /> },
+      { path: "/", element: user ?  <Home /> : <Navigate to="/login" /> },
       { path: "/courses", element: <Courses /> },
       { path: "/purchased-courses", element: <Purchases /> },
       {
@@ -45,11 +49,11 @@ const router = createBrowserRouter([
 
       // admin routes
       { path: "/admin/sign-up", element: <AdminSignUp /> },
-      { path: "/admin/login", element: <AdminLogin /> },
-      {path: "/admin/create-course", element:<CreateCourse />},
-      {path:"/admin/update-course/:courseId", element:<UpdateCourse />},
-      { path: "/admin/our-courses", element: <OurCourses /> },
-      { path: "/admin/dashboard", element: <Dashboard /> },
+      { path: "/admin/login", element:  <AdminLogin /> },
+      {path: "/admin/create-course", element: admin ? <CreateCourse /> : <Navigate to="/admin/login" /> },
+      {path:"/admin/update-course/:courseId", element:admin ? <UpdateCourse /> : <Navigate to="/admin/login" /> },
+      { path: "/admin/our-courses", element: admin ? <OurCourses /> : <Navigate to="/admin/login" /> },
+      { path: "/admin/dashboard", element: admin ?  <Dashboard /> : <Navigate to="/admin/login" />},
     ],
   },
 ]);
