@@ -16,6 +16,8 @@ import {
 
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
+import {AdminSignUp, AdminLogin, CreateCourse, OurCourses, Dashboard, UpdateCourse} from "./admin";
+
 
 // Load Stripe with your public key
 const stripePromise = loadStripe(
@@ -40,6 +42,14 @@ const router = createBrowserRouter([
       { path: "/settings", element: <Settings /> },
       { path: "/sign-up", element: <SignUp /> },
       { path: "/login", element: <Login /> },
+
+      // admin routes
+      { path: "/admin/sign-up", element: <AdminSignUp /> },
+      { path: "/admin/login", element: <AdminLogin /> },
+      {path: "/admin/create-course", element:<CreateCourse />},
+      {path:"/admin/update-course/:courseId", element:<UpdateCourse />},
+      { path: "/admin/our-courses", element: <OurCourses /> },
+      { path: "/admin/dashboard", element: <Dashboard /> },
     ],
   },
 ]);
