@@ -38,6 +38,7 @@ const AdminSidebar = () => {
         toast.success(response.data.message)
         localStorage.removeItem('admin');
         setIsLoggedIn(false)
+        window.location.reload()
       } catch (error) {
         console.log(error)
       

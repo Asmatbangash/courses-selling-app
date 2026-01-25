@@ -27,6 +27,7 @@ function CreateCourse() {
   const onSubmit = async (data) => {
     try {
       const formData = new FormData();
+
       formData.append("title", data.title);
       formData.append("description", data.description);
       formData.append("price", data.price);
@@ -47,9 +48,7 @@ function CreateCourse() {
       navigate("/admin/dashboard");
     } catch (error) {
       console.error(error);
-      toast.error(
-        error?.response?.data?.error || "Something went wrong"
-      );
+      toast.error(error?.response?.data?.error || "Something went wrong");
     }
   };
 
@@ -68,7 +67,7 @@ function CreateCourse() {
 
             <CardContent>
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-                <div>
+                                <div>
                   <Label>Course Title</Label>
                   <Input
                     placeholder="Enter course title"
@@ -80,7 +79,6 @@ function CreateCourse() {
                     </p>
                   )}
                 </div>
-
                 <div>
                   <Label>Description</Label>
                   <Textarea
@@ -91,7 +89,6 @@ function CreateCourse() {
                     })}
                   />
                 </div>
-
                 <div>
                   <Label>Price</Label>
                   <Input
@@ -100,7 +97,6 @@ function CreateCourse() {
                     {...register("price", { required: true })}
                   />
                 </div>
-
                 <div>
                   <Label>Course Image</Label>
                   <div className="border-2 border-dashed rounded-lg p-5 text-center">
@@ -109,11 +105,17 @@ function CreateCourse() {
                       id="image"
                       className="hidden"
                       accept="image/*"
-                      {...register("image", { required: true })}
-                      onChange={(e) =>
-                        setPreview(URL.createObjectURL(e.target.files[0]))
-                      }
+                      {...register("image", {
+                        required: true,
+                        onChange: (e) => {
+                          const file = e.target.files[0];
+                          if (file) {
+                            setPreview(URL.createObjectURL(file));
+                          }
+                        },
+                      })}
                     />
+
                     <label htmlFor="image" className="cursor-pointer">
                       <UploadCloud className="mx-auto mb-2" />
                       <p>Click to upload image</p>
@@ -123,6 +125,7 @@ function CreateCourse() {
                   {preview && (
                     <img
                       src={preview}
+                      alt="Preview"
                       className="mt-4 h-40 w-full object-cover rounded"
                     />
                   )}
@@ -131,6 +134,7 @@ function CreateCourse() {
                 <Button className="w-full text-lg">
                   Create Course
                 </Button>
+
               </form>
             </CardContent>
           </Card>

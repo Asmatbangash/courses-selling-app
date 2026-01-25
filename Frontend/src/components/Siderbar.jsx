@@ -39,6 +39,7 @@ const Sidebar = () => {
         toast.success(response.data.message)
         localStorage.removeItem('user');
         setIsLoggedIn(false)
+        window.location.reload()
       } catch (error) {
         console.log(error)
       
