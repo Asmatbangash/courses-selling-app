@@ -6,13 +6,14 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { UploadCloud } from "lucide-react";
+import { Loader2, UploadCloud } from "lucide-react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
 function CreateCourse() {
   const [preview, setPreview] = useState(null);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const {
@@ -26,6 +27,7 @@ function CreateCourse() {
 
   const onSubmit = async (data) => {
     try {
+      setLoading(true);
       const formData = new FormData();
 
       formData.append("title", data.title);
@@ -45,10 +47,13 @@ function CreateCourse() {
       );
 
       toast.success(response.data.message);
-      navigate("/admin/dashboard");
+      navigate("/admin/our-courses");
     } catch (error) {
       console.error(error);
       toast.error(error?.response?.data?.error || "Something went wrong");
+    }
+    finally {
+      setLoading(false);
     }
   };
 
@@ -131,8 +136,18 @@ function CreateCourse() {
                   )}
                 </div>
 
-                <Button className="w-full text-lg">
-                  Create Course
+                 <Button
+                  className="w-full text-lg flex items-center justify-center gap-2"
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <>
+                      <Loader2 className="h-5 w-5 animate-spin" />
+                      Creating...
+                    </>
+                  ) : (
+                    "Create Course"
+                  )}
                 </Button>
 
               </form>
