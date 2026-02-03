@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import {
-  Home,
+  LayoutDashboard,
   BookOpen,
   BookCheck,
   LogIn,
   LogOut,
   Menu,
+  Users,
   X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -27,9 +28,11 @@ const AdminSidebar = () => {
   }, []);
 
   const menu = [
-    { name: "Home", icon: Home, path: "/admin/dashboard" },
+    { name: "Dashboard", icon: LayoutDashboard, path: "/admin/dashboard" },
     { name: "Our-Courses", icon: BookOpen, path: "/admin/our-courses" },
     { name: "Create-Course", icon: BookCheck, path: "/admin/create-course" },
+    { name: "Users", icon: Users, path: "/admin/users" },
+
   ];
 
    const handleLogOut = async() =>{

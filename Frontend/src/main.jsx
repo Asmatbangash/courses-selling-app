@@ -16,7 +16,7 @@ import {
 
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
-import {AdminSignUp, AdminLogin, CreateCourse, OurCourses, Dashboard, UpdateCourse} from "./admin";
+import {AdminSignUp, AdminLogin, CreateCourse, OurCourses, Dashboard, UpdateCourse, Users} from "./admin";
 
 
 // Load Stripe with your public key
@@ -54,6 +54,7 @@ const router = createBrowserRouter([
       {path:"/admin/update-course/:courseId", element:admin ? <UpdateCourse /> : <Navigate to="/admin/login" /> },
       { path: "/admin/our-courses", element: admin ? <OurCourses /> : <Navigate to="/admin/login" /> },
       { path: "/admin/dashboard", element: admin ?  <Dashboard /> : <Navigate to="/admin/login" />},
+      { path: "/admin/users", element: admin ?  <Users /> : <Navigate to="/admin/login" />},
     ],
   },
 ]);

@@ -4,6 +4,7 @@ import CreateCourse from "./CreateCourse";
 import Dashboard from "./Dashboard";
 import OurCourses from "./OurCourses";
 import UpdateCourse from "./UpdateCourse";
+import Users from "./Users";
 
 export {
     AdminLogin,
@@ -11,5 +12,6 @@ export {
     CreateCourse,
     Dashboard,
     OurCourses,
-    UpdateCourse
+    UpdateCourse,
+    Users
 }

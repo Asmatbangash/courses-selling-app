@@ -1,10 +1,12 @@
 import { Outlet } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
+import UserContextProvider from "./context/UserContext";
 
 function App() {
   return (
     <>
-      <ToastContainer
+    <UserContextProvider>
+       <ToastContainer
         position="top-center"
         autoClose={2000}
         hideProgressBar={false}
@@ -14,6 +16,8 @@ function App() {
         theme="light"
       />
       <Outlet />
+    </UserContextProvider>
+     
     </>
   );
 }

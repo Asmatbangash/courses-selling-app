@@ -1,5 +1,6 @@
 import React, { useContext, useState } from "react";
 import { AdminSidebar } from "../components/admin";
+
 import {
   Card,
   CardContent,
@@ -7,6 +8,7 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
+
 import {
   Table,
   TableHeader,
@@ -15,8 +17,10 @@ import {
   TableRow,
   TableCell,
 } from "@/components/ui/table";
+
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+
 import {
   useReactTable,
   getCoreRowModel,
@@ -25,52 +29,51 @@ import {
   getPaginationRowModel,
   flexRender,
 } from "@tanstack/react-table";
-import { Plus } from "lucide-react";
-import { Link } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
 
 
-
-export default function Dashboard() {
-  const [globalFilter, setGlobalFilter] = useState("");
+export default function Users() {
   const {user} = useContext(UserContext)
-  
+  const [globalFilter, setGlobalFilter] = useState("");
   const overview = [
-    { title: "Total Courses", value: 12 },
-    { title: "Total Students", value: user.length },
-    { title: "Revenue", value: "$12,450" },
+    { title: "Total Users", value: user.length },
+    { title: "Active Users", value: 0 },
+    { title: "Inactive Users", value: 0 },
   ];
   
-  const coursesData = [
-    { id: 1, title: "React for Beginners", price: 49, students: 120 },
-    { id: 2, title: "Advanced Node.js", price: 69, students: 80 },
-    { id: 3, title: "MERN Fullstack Bootcamp", price: 99, students: 150 },
-    { id: 4, title: "Tailwind CSS Mastery", price: 29, students: 50 },
-    { id: 5, title: "Next.js Advanced", price: 59, students: 60 },
-    { id: 6, title: "TypeScript Essentials", price: 39, students: 70 },
-  ];
-  
+
   
   const columns = [
     {
-      accessorKey: "title",
-      header: "Course Title",
+      accessorKey: "FullName",
+      header: "Name",
       cell: ({ row }) => (
-        <span className="font-medium">{row.original.title}</span>
+        <span className="font-medium">{row.original.FullName}</span>
       ),
     },
     {
-      accessorKey: "price",
-      header: "Price",
-      cell: ({ row }) => `$${row.original.price}`,
+      accessorKey: "email",
+      header: "Email",
     },
     {
-      accessorKey: "students",
-      header: "Students",
+      accessorKey: "status",
+      header: "Status",
+      cell: ({ row }) => (
+        <span
+          className={`px-3 py-1 rounded-full text-xs font-medium ${
+            row.original.status === "Active"
+              ? "bg-green-100 text-green-700"
+              : "bg-red-100 text-red-700"
+          }`}
+        >
+          {row.original.status}
+        </span>
+      ),
     },
   ];
+
   const table = useReactTable({
-    data: coursesData,
+    data: user,
     columns,
     state: {
       globalFilter,
@@ -92,57 +95,50 @@ export default function Dashboard() {
       <AdminSidebar />
 
       <main className="flex-1 p-6 max-w-7xl mx-auto w-full">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8"> <div> <h1 className="text-2xl font-semibold text-gray-900"> Dashboard </h1> <p className="text-sm text-gray-500 mt-1"> Manage courses and monitor performance </p> </div> <Link to={"/admin/create-course"}><Button className="rounded-lg cursor-pointer"> <Plus className="w-4 h-4 mr-2" /> New Course </Button></Link> </div>
-
-        <div className="grid grid-cols sm:grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-  {overview.map((item) => (
-    <Card
-      key={item.title}
-      className="rounded-2xl border bg-background shadow-sm transition-all hover:shadow-md"
-    >
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium text-muted-foreground">
-          {item.title}
-        </CardTitle>
-
-        {item.icon && (
-          <span className="text-muted-foreground">
-            {item.icon}
-          </span>
-        )}
-      </CardHeader>
-
-      <CardContent>
-        <p className="text-3xl font-bold tracking-tight">
-          {item.value}
-        </p>
-
-        {item.description && (
-          <p className="mt-1 text-xs text-muted-foreground">
-            {item.description}
+        <div className="mb-8">
+          <h1 className="text-2xl font-semibold text-gray-900">
+            Users
+          </h1>
+          <p className="text-sm text-gray-500 mt-1">
+            View and manage registered users
           </p>
-        )}
-      </CardContent>
-    </Card>
-  ))}
-</div>
+        </div>
+
+        <div className="grid sm:grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+          {overview.map((item) => (
+            <Card
+              key={item.title}
+              className="rounded-2xl border bg-background shadow-sm transition-all hover:shadow-md"
+            >
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground">
+                  {item.title}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-3xl font-bold tracking-tight">
+                  {item.value}
+                </p>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
 
         <Card className="rounded-xl">
           <CardHeader>
-            <CardTitle>Courses</CardTitle>
+            <CardTitle>Users List</CardTitle>
             <CardDescription>
-              Search, sort & paginate courses
+              Search, sort & paginate users
             </CardDescription>
           </CardHeader>
 
           <CardContent className="space-y-4">
             <Input
-              placeholder="Search courses..."
+              placeholder="Search users..."
               value={globalFilter ?? ""}
               onChange={(e) => setGlobalFilter(e.target.value)}
               className="max-w-sm"
             />
-
             <div className="rounded-lg border overflow-hidden">
               <Table>
                 <TableHeader>
@@ -186,13 +182,14 @@ export default function Dashboard() {
                         colSpan={columns.length}
                         className="text-center py-6"
                       >
-                        No courses found
+                        No users found
                       </TableCell>
                     </TableRow>
                   )}
                 </TableBody>
               </Table>
             </div>
+
             <div className="flex justify-between items-center">
               <p className="text-sm text-muted-foreground">
                 Page {table.getState().pagination.pageIndex + 1} of{" "}
