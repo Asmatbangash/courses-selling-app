@@ -107,7 +107,7 @@ const logOut = async (req, res) => {
 
 const getUsers = async(req, res) =>{
   try {
-    const users = await user.find()
+    const users = await user.find().select("-password")
     if(!users){
       return res.status(401).json({errors: "user not created yet!"})
     }
