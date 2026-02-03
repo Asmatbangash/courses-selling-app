@@ -105,6 +105,19 @@ const logOut = async (req, res) => {
     }
 }
 
+const getUsers = async(req, res) =>{
+  try {
+    const users = await user.find()
+    if(!users){
+      return res.status(401).json({errors: "user not created yet!"})
+    }
+    res.status(200).json({users})
+  } catch (error) {
+    console.log(error)
+    return res.status(500).json("there are some error to get user", error)
+  }
+}
+
 const purchaseCourses = async(req, res) =>{
  const userId = req.userId
  try {
@@ -132,4 +145,4 @@ const purchaseCourses = async(req, res) =>{
 }
 
 
-export { signUp, logIn, logOut, purchaseCourses }
+export { signUp, logIn, logOut, getUsers, purchaseCourses }
