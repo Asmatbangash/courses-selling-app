@@ -89,7 +89,7 @@ function OurCourses() {
                   </p>
                 <div>
                   <Button variant='destructive' className="w-full mt-2 cursor-pointer" onClick={()=>handlDelete(course._id)}>Delete</Button>
-                  <Link to={`/admin/update-course/${course._id}`}>
+                  <Link to={`/admin/update-course/${course._id}`} className="w-full mt-2 cursor-pointer">
                   <Button className="w-full mt-2 cursor-pointer">Update</Button>
                   </Link>
                 </div>

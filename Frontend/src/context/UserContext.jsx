@@ -24,7 +24,6 @@ function UserContextProvider({ children }) {
           withCredentials: true,
         }
       );
-      console.log(response.data.users)
       setUser(response.data.users);
     } catch (error) {
       console.error("Error fetching users:", error);

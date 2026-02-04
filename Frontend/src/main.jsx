@@ -51,7 +51,7 @@ const router = createBrowserRouter([
       { path: "/admin/sign-up", element: <AdminSignUp /> },
       { path: "/admin/login", element:  <AdminLogin /> },
       {path: "/admin/create-course", element: admin ? <CreateCourse /> : <Navigate to="/admin/login" /> },
-      {path:"/admin/update-course/:courseId", element:admin ? <UpdateCourse /> : <Navigate to="/admin/login" /> },
+      {path:"/admin/update-course/:id", element:admin ? <UpdateCourse /> : <Navigate to="/admin/login" /> },
       { path: "/admin/our-courses", element: admin ? <OurCourses /> : <Navigate to="/admin/login" /> },
       { path: "/admin/dashboard", element: admin ?  <Dashboard /> : <Navigate to="/admin/login" />},
       { path: "/admin/users", element: admin ?  <Users /> : <Navigate to="/admin/login" />},

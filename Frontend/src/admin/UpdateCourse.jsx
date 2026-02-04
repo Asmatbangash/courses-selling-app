@@ -1,9 +1,195 @@
-import React from 'react'
+import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { AdminSidebar } from "../components/admin";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Loader2, UploadCloud } from "lucide-react";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { useNavigate, useParams } from "react-router-dom";
 
 function UpdateCourse() {
+  const { id } = useParams();
+  const navigate = useNavigate();
+
+  const [preview, setPreview] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm();
+
+  const admin = JSON.parse(localStorage.getItem("admin"));
+  const token = admin?.token;
+
+  useEffect(() => {
+    const fetchCourse = async () => {
+      try {
+        const res = await axios.get(
+          `http://localhost:4000/api/v1/course/get/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            withCredentials: true,
+          }
+        );
+
+        const course = res.data?.detailCoursView
+;
+
+        setValue("title", course.title);
+        setValue("description", course.description);
+        setValue("price", course.price);
+        setPreview(course.image?.url);
+      } catch (error) {
+        toast.error("Failed to load course");
+      }
+    };
+
+    fetchCourse();
+  }, []);
+
+  const onSubmit = async (data) => {
+    try {
+      setLoading(true);
+
+      const formData = new FormData();
+      formData.append("title", data.title);
+      formData.append("description", data.description);
+      formData.append("price", data.price);
+
+      // image is optional in update
+      if (data.image && data.image[0]) {
+        formData.append("image", data.image[0]);
+      }
+
+      const res = await axios.patch(
+        `http://localhost:4000/api/v1/course/update/${id}`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        }
+      );
+
+      toast.success(res.data.message);
+      navigate("/admin/our-courses");
+    } catch (error) {
+      toast.error(error?.response?.data?.error || "Update failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div>UpdateCourse</div>
-  )
+    <div className="flex min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      <AdminSidebar />
+
+      <main className="flex-1 p-8">
+        <div className="max-w-3xl mx-auto">
+          <Card className="shadow-xl rounded-2xl p-10">
+            <CardHeader>
+              <CardTitle className="text-2xl font-bold">
+                Update Course
+              </CardTitle>
+            </CardHeader>
+
+            <CardContent>
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+                <div>
+                  <Label>Course Title</Label>
+                  <Input
+                    placeholder="Enter course title"
+                    {...register("title", { required: "Title is required" })}
+                  />
+                  {errors.title && (
+                    <p className="text-red-500 text-sm">
+                      {errors.title.message}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <Label>Description</Label>
+                  <Textarea
+                    rows={4}
+                    placeholder="Enter course description"
+                    {...register("description", {
+                      required: "Description is required",
+                    })}
+                  />
+                </div>
+                <div>
+                  <Label>Price</Label>
+                  <Input
+                    type="number"
+                    placeholder="Enter price"
+                    {...register("price", { required: true })}
+                  />
+                </div>
+
+                <div>
+                  <Label>Course Image</Label>
+                  <div className="border-2 border-dashed rounded-lg p-5 text-center">
+                    <input
+                      type="file"
+                      id="image"
+                      className="hidden"
+                      accept="image/*"
+                      {...register("image", {
+                        onChange: (e) => {
+                          const file = e.target.files[0];
+                          if (file) {
+                            setPreview(URL.createObjectURL(file));
+                          }
+                        },
+                      })}
+                    />
+
+                    <label htmlFor="image" className="cursor-pointer">
+                      <UploadCloud className="mx-auto mb-2" />
+                      <p>Click to upload new image (optional)</p>
+                    </label>
+                  </div>
+
+                  {preview && (
+                    <img
+                      src={preview}
+                      alt="Preview"
+                      className="mt-4 h-40 w-full object-cover rounded"
+                    />
+                  )}
+                </div>
+
+                <Button
+                  className="w-full text-lg flex items-center justify-center gap-2"
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <>
+                      <Loader2 className="h-5 w-5 animate-spin" />
+                      Updating...
+                    </>
+                  ) : (
+                    "Update Course"
+                  )}
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
+        </div>
+      </main>
+    </div>
+  );
 }
 
-export default UpdateCourse
+export default UpdateCourse;

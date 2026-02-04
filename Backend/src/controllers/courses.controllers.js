@@ -66,56 +66,63 @@ const getAllCourse = async (req, res) => {
 
 // update course
 const updateCourse = async (req, res) => {
-    const adminId = req.adminId
-    try {
-        const { id } = req.params;
-        const { title, description, price } = req.body;
+  const adminId = req.adminId;
 
-        const image = req.files?.image;
-        if (!image) {
-            return res.status(400).json({ error: "No file uploaded" });
-        }
+  try {
+    const { id } = req.params;
+    const { title, description, price } = req.body;
 
-        const allowedFormats = ["image/png", "image/jpeg"];
-        if (!allowedFormats.includes(image.mimetype)) {
-            return res.status(400).json({ error: "Only PNG and JPEG formats are allowed" });
-        }
+    const updateData = {
+      title,
+      description,
+      price,
+      creatorId: adminId,
+    };
 
-        // ✅ Upload to Cloudinary
-        const cloud_response = await cloudinary.uploader.upload(image.tempFilePath);
+    if (req.files && req.files.image) {
+      const image = req.files.image;
 
-        if (!cloud_response || cloud_response.error) {
-            return res.status(400).json({ error: "Error uploading image to Cloudinary" });
-        }
+      const allowedFormats = ["image/png", "image/jpeg", "image/jpg"];
+      if (!allowedFormats.includes(image.mimetype)) {
+        return res
+          .status(400)
+          .json({ error: "Only PNG and JPEG formats are allowed" });
+      }
 
-        // ✅ Use `cloud_response` instead of `image`
-        const updateCourseData = await course.findByIdAndUpdate(
-            id,
-            {
-                title,
-                description,
-                price,
-                image: {
-                    public_id: cloud_response.public_id,
-                    url: cloud_response.secure_url
-                },
-                creatorId: adminId
-            },
-            { new: true }
-        );
+      const cloud_response = await cloudinary.uploader.upload(
+        image.tempFilePath
+      );
 
-        if (!updateCourseData) {
-            return res.status(404).json({ message: "Course not found!" });
-        }
+      if (!cloud_response) {
+        return res
+          .status(400)
+          .json({ error: "Error uploading image to Cloudinary" });
+      }
 
-        res.status(200).json({
-            message: "Course data updated successfully.",
-            updateCourseData
-        });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Internal server error" });
+      updateData.image = {
+        public_id: cloud_response.public_id,
+        url: cloud_response.secure_url,
+      };
     }
+
+    const updatedCourse = await course.findByIdAndUpdate(
+      id,
+      updateData,
+      { new: true }
+    );
+
+    if (!updatedCourse) {
+      return res.status(404).json({ message: "Course not found!" });
+    }
+
+    res.status(200).json({
+      message: "Course updated successfully.",
+      updatedCourse,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
 };
 
 
@@ -142,7 +149,7 @@ const deleteCourse = async (req, res) => {
 const courseDetail = async (req, res) => {
     try {
         const { id } = req.params
-        const detailCoursView = await course.findByIdAndDelete(id)
+        const detailCoursView = await course.findById(id)
         if (!detailCoursView) {
             res.status(400).json({ message: "course not found" })
         }
