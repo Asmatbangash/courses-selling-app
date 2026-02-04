@@ -12,6 +12,7 @@ import {
   SignUp,
   Settings,
   Buy,
+  CourseInDetail,
 } from "./pages";
 
 import { loadStripe } from "@stripe/stripe-js";
@@ -43,6 +44,7 @@ const router = createBrowserRouter([
         path: "/buy/:courseId",
         element: <Buy />,
       },
+      {path:"/course-in-detail/:id", element:<CourseInDetail />},
       { path: "/settings", element: <Settings /> },
       { path: "/sign-up", element: <SignUp /> },
       { path: "/login", element: <Login /> },

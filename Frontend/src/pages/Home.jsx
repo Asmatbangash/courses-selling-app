@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 import axios from "axios";
 import { Navbar, Footer } from "../components";
-import { Link } from "react-router-dom";
+import { Link, Links } from "react-router-dom";
 
 function PrevArrow({ onClick }) {
   return (
@@ -118,11 +118,13 @@ function Home() {
                 <div key={course._id} className="px-3">
                   <Card className="group overflow-hidden rounded-2xl shadow-md hover:shadow-2xl transition bg-white">
                     <div className="relative overflow-hidden">
+                      <Link to={`/course-in-detail/${course._id}`}>
                       <img
                         src={course?.image?.url}
                         alt={course.title}
                         className="h-48 w-full object-cover group-hover:scale-105 transition"
                       />
+                      </Link>
 
                       <span className="absolute top-3 right-3 bg-black text-white text-sm px-3 py-1 rounded-full">
                         ${course.price}

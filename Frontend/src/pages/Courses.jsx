@@ -45,11 +45,14 @@ function Courses() {
                 className="group overflow-hidden rounded-2xl shadow-md hover:shadow-2xl transition duration-300 bg-white"
               >
                 <div className="relative">
-                  <img
+                  <Link to={`/course-in-detail/${course._id}`}>
+                   <img
                     src={course?.image?.url || "/placeholder.jpg"}
                     alt={course.title}
                     className="h-48 w-full object-cover group-hover:scale-105 transition duration-300"
                   />
+                  </Link>
+                 
 
                   <span className="absolute top-3 right-3 bg-black text-white text-sm px-3 py-1 rounded-full">
                     ${course.price}

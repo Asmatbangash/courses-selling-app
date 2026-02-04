@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Sidebar } from "../components";
 import { Card, CardContent } from "@/components/ui/card";
+import { Link } from "react-router-dom";
 
 function Purchases() {
   const [purchased, setPurchased] = useState([]);
@@ -92,11 +93,13 @@ function Purchases() {
                 className="group overflow-hidden rounded-2xl border bg-white shadow-sm hover:shadow-xl transition-all duration-300"
               >
                 <div className="relative">
-                  <img
-                    src={course.image?.url}
+                  <Link to={`/course-in-detail/${course._id}`}>
+                   <img
+                    src={course?.image?.url || "/placeholder.jpg"}
                     alt={course.title}
-                    className="h-44 w-full object-cover group-hover:scale-105 transition duration-300"
+                    className="h-48 w-full object-cover group-hover:scale-105 transition duration-300"
                   />
+                  </Link>
                   <span className="absolute top-3 right-3 bg-black/80 text-white text-xs px-3 py-1 rounded-full">
                     Purchased
                   </span>
